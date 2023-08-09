@@ -1,0 +1,45 @@
+@font-face{
+	font-family: roboto;
+	src: url("/assets/fonts/Roboto/Roboto-Light.ttf");
+}
+@font-face{
+	font-family: lato;
+	src: url("/assets/fonts/Lato/Lato-Regular.ttf");
+}
+@font-face{
+	font-family: borel;
+	src: url("/assets/fonts/Borel/Borel-Regular.ttf");
+}
+:root{
+	--gap: 10px;
+	--padding: 10px;
+}
+body{
+	font-family: lato;
+	padding: 0 var(--padding);
+	margin: auto;
+}
+#root{
+	display: flex;
+	flex-direction: column;
+}
+header{
+	font-family: borel;
+	display: flex;
+	height: 100px;
+	justify-content: center;
+	gap: var(--gap);
+}
+header h1{
+	display: flex;
+	align-items: center;
+}
+
+main form{
+	display: flex;
+	align-items: center;
+	gap: var(--gap);
+}
+main form input{
+	flex-grow: 1;
+}
