@@ -4,30 +4,55 @@ import "./normalize.css";
 import "./App.css";
 
 export default function App(){
-	const [message, setMessage] = useState("");
+	const [nickname, setNickname] = useState("");
+	const [myMessage, setMyMessage] = useState("");
 	const [messagesList, setMessagesList] = useState([]);
+	const [isConnected, setIsConnected] = useState(false);
 
 	const socket = useRef(null);
 
 	useEffect(() => {
-		socket.current = io({autoConnect:false});
-		socket.current.connect();
-
+		socket.current = io({autoConnect: false});
+		isConnected ? socket.current.connect() : null;
+		
 		return () => {
 			socket.current.disconnect();
 		};
-	}, []);
+	}, [isConnected]);
 
-	function handleChange(e){
-		setMessage(e.target.value);
+	useEffect(() => {
+		socket.current.on("message", (data) => {
+			setMessagesList(prevData => (
+				[...prevData, data]
+			));
+		});
+
+		return () => {
+			socket.current.off("message");
+		};
+	}, [myMessage]);
+
+	function handleChange(e, target){
+		switch(target){
+			case "nickname": setNickname(e.target.value); break;
+			case "myMessage": setMyMessage(e.target.value); break;
+			default: break;
+		};
 	};
 
-	function handleSubmit(e){
+	function handleSubmit(e, target){
 		e.preventDefault();
-		socket.current.emit("message", message);
-		setMessage("");
-		const input_message = document.getElementById("message");
-		input_message.value = "";
+		switch(target){
+			case "nickname":
+				setIsConnected(true);
+				break;
+			case "myMessage":
+				socket.current.emit("message", `${nickname}: ${myMessage}`);
+				setMyMessage("");
+				document.getElementById("myMessage").value = "";
+				break;
+			default: break;
+		};
 	};
 
 	return <>
@@ -36,11 +61,25 @@ export default function App(){
 			<h1>Mood Chat</h1>
 		</header>
 		<main>
-			<form onSubmit={handleSubmit}>
-				<input type="text" id="message" name="message" onChange={handleChange} />
-				<button>Send</button>
-			</form>
-			<p>{message}</p>
+			{!isConnected
+				? <form onSubmit={(e) => handleSubmit(e, "nickname")}>
+					<label htmlFor="nickname">Choose your nickname</label>
+					<input
+						type="text"
+						name="nickname"
+						required
+						onChange={(e) => handleChange(e, "nickname")} />
+					<button>Log In</button>
+				</form> : null}
+			{isConnected
+				? <form onSubmit={(e) => handleSubmit(e, "myMessage")}>
+					<input
+						type="text"
+						id="myMessage"
+						required
+						onChange={(e) => handleChange(e, "myMessage")} />
+					<button>Send</button>
+				</form> : null}
 		</main>
 	</>;
 };
