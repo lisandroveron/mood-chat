@@ -7,9 +7,10 @@ from flask_socketio import SocketIO
 load_dotenv()
 app = Flask("server", static_folder="dist/assets/", template_folder="dist")
 CORS(app)
-socketio = SocketIO(
-    app,
-    cors_allowed_origins=os.environ["CORS_ORIGINS"])
+if "CORS_ORIGINS" in os.environ:
+    socketio = SocketIO(app, cors_allowed_origins=os.environ["CORS_ORIGINS"])
+else:
+    socketio = SocketIO(app)
 
 users = {}
 
