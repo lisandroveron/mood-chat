@@ -1,11 +1,11 @@
 import os
 from dotenv import load_dotenv
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
 load_dotenv()
-app = Flask("server")
+app = Flask("server", static_folder="dist/assets/", template_folder="dist")
 CORS(app)
 socketio = SocketIO(
     app,
@@ -15,7 +15,7 @@ users = {}
 
 @app.route("/")
 def index():
-    return ""
+    return render_template("index.html")
 
 @socketio.on("disconnect")
 def deleteUser():
