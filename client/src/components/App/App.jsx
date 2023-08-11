@@ -6,19 +6,25 @@ import "./App.css";
 export default function App(){
 	const [nickname, setNickname] = useState("");
 	const [myMessage, setMyMessage] = useState("");
+	const [isLogged, setIsLogged] = useState(false);
+	const [usersList, setUsersList] = useState([]);
 	const [messagesList, setMessagesList] = useState([]);
-	const [isConnected, setIsConnected] = useState(false);
 
 	const socket = useRef(null);
 
 	useEffect(() => {
 		socket.current = io({autoConnect: false});
-		isConnected ? socket.current.connect() : null;
+		socket.current.connect();
+		window.addEventListener(
+			"beforeunload",
+			() => socket.current.disconnect()
+		);
 		
 		return () => {
+			window.removeEventListener("beforeunload", () => {});
 			socket.current.disconnect();
 		};
-	}, [isConnected]);
+	}, []);
 
 	useEffect(() => {
 		socket.current.on("message", (data) => {
@@ -27,10 +33,15 @@ export default function App(){
 			));
 		});
 
+		socket.current.on("usersUpdate", (data) => {
+			setUsersList(data);
+		});
+
 		return () => {
-			socket.current.off("message");
+			socket.current.off("message", () => {});
+			socket.current.off("usersUpdate", () => {});
 		};
-	}, [myMessage]);
+	}, []);
 
 	function handleChange(e, target){
 		switch(target){
@@ -44,10 +55,16 @@ export default function App(){
 		e.preventDefault();
 		switch(target){
 			case "nickname":
-				setIsConnected(true);
+				socket.current.emit(
+					"check",
+					nickname,
+					(validated, error) => {
+						validated ? setIsLogged(true) : alert(error);
+					}
+				);
 				break;
 			case "myMessage":
-				socket.current.emit("message", `${nickname}: ${myMessage}`);
+				socket.current.emit("message", myMessage);
 				setMyMessage("");
 				document.getElementById("myMessage").value = "";
 				break;
@@ -61,25 +78,43 @@ export default function App(){
 			<h1>Mood Chat</h1>
 		</header>
 		<main>
-			{!isConnected
-				? <form onSubmit={(e) => handleSubmit(e, "nickname")}>
+			{!isLogged
+				? <form
+					id="nicknameForm"
+					onSubmit={(e) => handleSubmit(e, "nickname")}>
 					<label htmlFor="nickname">Choose your nickname</label>
 					<input
 						type="text"
 						name="nickname"
+						autoFocus
 						required
 						onChange={(e) => handleChange(e, "nickname")} />
 					<button>Log In</button>
 				</form> : null}
-			{isConnected
-				? <form onSubmit={(e) => handleSubmit(e, "myMessage")}>
-					<input
-						type="text"
-						id="myMessage"
-						required
-						onChange={(e) => handleChange(e, "myMessage")} />
-					<button>Send</button>
-				</form> : null}
+			{isLogged
+				? <div id="chatWindow">
+					<div id="messagesList">
+						{messagesList.map((item, index) => (
+							<p key={`message-${index}`}>{item}</p>
+						))}
+					</div>
+					<div id="usersList">
+						{usersList.map((item, index) => (
+							<p key={`user-${index}`}>{item}</p>
+						))}
+					</div>
+					<form
+						id="myMessageForm"
+						onSubmit={(e) => handleSubmit(e, "myMessage")}>
+						<input
+							type="text"
+							id="myMessage"
+							autoFocus
+							required
+							onChange={(e) => handleChange(e, "myMessage")} />
+						<button>Send</button>
+					</form>
+				</div> : null}
 		</main>
 	</>;
 };

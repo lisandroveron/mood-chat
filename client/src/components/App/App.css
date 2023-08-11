@@ -14,32 +14,65 @@
 	--gap: 10px;
 	--padding: 10px;
 }
+*{
+	gap: var(--gap);
+}
 body{
 	font-family: lato;
-	padding: 0 var(--padding);
+	padding: var(--padding);
 	margin: auto;
 }
 #root{
 	display: flex;
 	flex-direction: column;
+	height: 100%;
+	width: 100%;
 }
 header{
 	font-family: borel;
 	display: flex;
-	height: 100px;
+	height: 90px;
 	justify-content: center;
-	gap: var(--gap);
 }
 header h1{
 	display: flex;
 	align-items: center;
 }
 
-main form{
+main{
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+}
+main #nicknameForm{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+main #chatWindow{
+	display: grid;
+	grid-template-columns: 1fr 25%;
+	grid-template-rows: 1fr;
+	grid-template-areas: "messagesList usersList"
+						 "myMessageForm myMessageForm";
+	flex-grow: 1;
+}
+main #chatWindow > *:not(#myMessageForm){
+	border: 1px solid grey;
+	border-radius: 10px;
+	padding: var(--padding);
+}
+main #messagesList{
+	grid-area: messagesList;
+}
+main #usersList{
+	grid-area: usersList;
+}
+main #myMessageForm{
 	display: flex;
 	align-items: center;
-	gap: var(--gap);
+	grid-area: myMessageForm;
 }
-main form input{
+main #myMessageForm input{
 	flex-grow: 1;
 }
