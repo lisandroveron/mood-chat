@@ -13,15 +13,13 @@ export default function App(){
 	const socket = useRef(null);
 
 	useEffect(() => {
-		socket.current = io({autoConnect: false});
+		socket.current = io({
+			autoConnect: false,
+			closeOnBeforeunload: true,
+		});
 		socket.current.connect();
-		window.addEventListener(
-			"beforeunload",
-			() => socket.current.disconnect()
-		);
 		
 		return () => {
-			window.removeEventListener("beforeunload", () => {});
 			socket.current.disconnect();
 		};
 	}, []);
