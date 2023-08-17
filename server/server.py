@@ -3,9 +3,12 @@ from dotenv import load_dotenv
 from flask import Flask, request, render_template
 from flask_cors import CORS
 from flask_socketio import SocketIO
+from deep_translator import GoogleTranslator
+from textblob import TextBlob
 
 load_dotenv()
 app = Flask("server", static_folder="dist/assets/", template_folder="dist")
+gt = GoogleTranslator(source="auto", target="en")
 CORS(app)
 if "CORS_ORIGINS" in os.environ:
     socketio = SocketIO(app, cors_allowed_origins=os.environ["CORS_ORIGINS"])
@@ -27,7 +30,12 @@ def deleteUser():
 
 @socketio.on("message")
 def transmit(message):
-    socketio.emit("message", f"{users[request.sid]}: {message}")
+    blob = TextBlob(gt.translate(message))
+    socketio.emit("message", {
+        "message": f"{users[request.sid]}: {message}",
+        "polarity": blob.sentiment.polarity,
+        "subjectivity": blob.sentiment.subjectivity,
+    })
 
 @socketio.on("check")
 def check(nickname):
