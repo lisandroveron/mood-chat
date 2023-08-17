@@ -2,6 +2,7 @@ import {useEffect, useRef, useState} from "react";
 import { io } from "socket.io-client";
 import "./normalize.css";
 import "./App.css";
+import Message from "../Message/Message.jsx";
 
 export default function App(){
 	const [nickname, setNickname] = useState("");
@@ -93,7 +94,12 @@ export default function App(){
 				? <div id="chatWindow">
 					<div id="messagesList">
 						{messagesList.map((item, index) => (
-							<p key={`message-${index}`}>{item}</p>
+							<Message
+								key={`message-${index}`}
+								message={item.message}
+								polarity={item.polarity}
+								subjectivity={item.subjectivity}
+							/>
 						))}
 					</div>
 					<div id="usersList">
