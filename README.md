@@ -2,6 +2,8 @@
 
 *Chat web application with real-time sentiment analysis, using React and Flask. Messages are displayed in colors that reflect your emotional polarity.*
 
+**IMPORTANT NOTE**: Due to hosting limitations (NOT exclusive to adaptable.io, but to all free hostings services), the connection is closed after 30 seconds of being created, so it is necessary to restart the application by reloading the page. Keep in mind that this is due to the anti-scaling system of the hostings, if the code is executed in localhost, it will execute normally without problems. Below I will leave the instructions to run the application on the local host (your pc).
+
 The Chat Web Application is an interactive platform developed using React on the frontend and Flask on the backend. Its main feature is the ability to analyze the sentiment of messages in real time, providing an enriching experience for users by visually reflecting the emotions associated with each message.
 
 The sentiment analysis functionality is achieved through the use of the TextBlob library, which allows evaluating the emotional polarity and subjectivity of each message. Polarity refers to whether the sentiment is positive, negative, or neutral, while subjectivity indicates how objective or subjective the message itself is.
@@ -17,8 +19,6 @@ This application not only enables interactive communication, but also provides a
 In short, the Chat Web App combines the sentiment analysis technology of TextBlob with the dynamic rendering capabilities of React and the API building power of Flask. The result is a unique chat experience that is not only text-based, but also taps into the emotional dimension of human communication.
 
 Try the [live demo](http://moodchat.adaptable.app/)
-
-**IMPORTANT NOTE**: Due to hosting limitations (NOT exclusive to adaptable.io, but to all hostings), the connection is closed after 30 seconds of being created, so it is necessary to restart the application by reloading the page. Keep in mind that this is due to the anti-scaling system of the hostings, if the code is executed in localhost, it will execute normally without problems. Below I will leave the instructions to run the application on the local host (your pc).
 
 ## How to run in local
 
