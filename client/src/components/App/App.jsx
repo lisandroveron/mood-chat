@@ -104,7 +104,11 @@ export default function App(){
 					</div>
 					<div id="usersList">
 						{usersList.map((item, index) => (
-							<p key={`user-${index}`}>{item}</p>
+							<p
+								key={`user-${index}`}
+								className="itemList">
+								{item}
+							</p>
 						))}
 					</div>
 					<form

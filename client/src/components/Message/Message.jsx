@@ -21,6 +21,6 @@ export default function Message({message, polarity, subjectivity}){
 	};
 
 	return (<>
-		<p style={messageStyle}>{message}</p>
+		<p style={messageStyle} className="itemList">{message}</p>
 	</>);
 };
